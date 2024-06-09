@@ -22,20 +22,21 @@ describe("Test Contract", function () {
     let tokenContract: any
     beforeEach("Deploy contract", async function () {
         [owner, admin, moderator, user, user1] = await ethers.getSigners()
-
+        const mint_decimal = 3
+        const mint_amount = 1000000
         const marketplaceContract = await ethers.getContractFactory("EstokkYam")
         marketplace = await marketplaceContract.deploy()
 
         tokenContract = await ethers.getContractFactory("Token")
-        token_notwhite = await tokenContract.deploy("NotWhite", "NotWhite", 1000000, 18)
-        token_real = await tokenContract.deploy("RealToken", "RT", 1000000, 18)
-        token_erc20_permit = await tokenContract.deploy("ERCPermit", "Et", 1000000, 18)
-        token_erc20_nopermit = await tokenContract.deploy("ERC_not", "Ent", 1000000, 18)
+        token_notwhite = await tokenContract.deploy("NotWhite", "NotWhite", mint_amount, mint_decimal)
+        token_real = await tokenContract.deploy("RealToken", "RT", mint_amount, mint_decimal)
+        token_erc20_permit = await tokenContract.deploy("ERCPermit", "Et", mint_amount, mint_decimal)
+        token_erc20_nopermit = await tokenContract.deploy("ERC_not", "Ent", mint_amount, mint_decimal)
 
-        currency_usdc = await tokenContract.deploy("USDC", "usdc", 100000, 18)
-        currency_armmwXdai = await tokenContract.deploy("armxdai", "armxdai", 100000, 18)
-        currency_wxdai = await tokenContract.deploy("xdai", "xdai", 100000, 18)
-        currency_mai = await tokenContract.deploy("mai", "mai", 100000, 18)
+        currency_usdc = await tokenContract.deploy("USDC", "usdc", mint_amount, mint_decimal)
+        currency_armmwXdai = await tokenContract.deploy("armxdai", "armxdai", mint_amount, mint_decimal)
+        currency_wxdai = await tokenContract.deploy("xdai", "xdai", mint_amount, mint_decimal)
+        currency_mai = await tokenContract.deploy("mai", "mai", mint_amount, mint_decimal)
 
         const admin_address: any = await admin.getAddress()
         const moderator_address: any = await moderator.getAddress()
@@ -111,9 +112,6 @@ describe("Test Contract", function () {
             console.log("realTokenBalence: ", await token_real.connect(user1).balanceOf(user))
             console.log("currancy_Token: ", await currency_usdc.connect(user1).balanceOf(user1))
             console.log("currancy_Token: ", await currency_usdc.connect(user1).balanceOf(user))
-
-            // const result = await marketplace.connect(user1).getOldBuyerBalance(0, price, amount)
-            // console.log("Result: ", result)
         })
 
         // it("Create Permit Offer", async function () {
