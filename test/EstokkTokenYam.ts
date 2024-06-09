@@ -19,18 +19,18 @@ describe("Test Contract", function () {
     let currency_wxdai: any
     let currency_armmwXdai: any
     let currency_mai: any
-
+    let tokenContract: any
     beforeEach("Deploy contract", async function () {
         [owner, admin, moderator, user, user1] = await ethers.getSigners()
 
         const marketplaceContract = await ethers.getContractFactory("EstokkYam")
         marketplace = await marketplaceContract.deploy()
 
-        const tokenContract = await ethers.getContractFactory("Token")
+        tokenContract = await ethers.getContractFactory("Token")
         token_notwhite = await tokenContract.deploy("NotWhite", "NotWhite", 1000000, 18)
-        token_real = await tokenContract.deploy("RealToken", "RT", 100000, 18)
-        token_erc20_permit = await tokenContract.deploy("ERCPermit", "Et", 100000, 18)
-        token_erc20_nopermit = await tokenContract.deploy("ERC_not", "Ent", 100000, 18)
+        token_real = await tokenContract.deploy("RealToken", "RT", 1000000, 18)
+        token_erc20_permit = await tokenContract.deploy("ERCPermit", "Et", 1000000, 18)
+        token_erc20_nopermit = await tokenContract.deploy("ERC_not", "Ent", 1000000, 18)
 
         currency_usdc = await tokenContract.deploy("USDC", "usdc", 100000, 18)
         currency_armmwXdai = await tokenContract.deploy("armxdai", "armxdai", 100000, 18)
@@ -78,8 +78,8 @@ describe("Test Contract", function () {
             let offer_token: any = await token_real.getAddress()
             let buyer_token: any = await currency_usdc.getAddress()
             let buyer: any = await user1.getAddress()
-            let price: any = 100000000
-            let amount: any = 1000000000000000
+            let price: any = 5
+            let amount: any = 500
             await marketplace.connect(user).createOffer(offer_token, buyer_token, buyer, price, amount)
 
             console.log("Real_Token: ", await token_real.getAddress())
@@ -89,7 +89,16 @@ describe("Test Contract", function () {
 
             console.log("OfferCount: ", await marketplace.getOfferCount())
             console.log(await marketplace.showOffer(0))
-            await marketplace.connect(user1).buy(0, price, amount)
+            console.log(await marketplace.getAddress());
+
+            await token_real.connect(owner).transfer(user1, 30000)
+            await token_real.connect(owner).transfer(user, 30000)
+            
+            console.log("realTokenBalance", await token_real.connect(user1).balanceOf(user1));
+            console.log("realTokenBalence: ", await token_real.connect(user1).balanceOf(user))
+            await token_real.connect(user1).approve(marketplace, amount)
+            await token_real.connect(user).approve(marketplace, amount)
+            await marketplace.connect(user1).buy(0, price, amount )
         })
 
         // it("Create Permit Offer", async function () {
