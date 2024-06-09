@@ -93,12 +93,27 @@ describe("Test Contract", function () {
 
             await token_real.connect(owner).transfer(user1, 30000)
             await token_real.connect(owner).transfer(user, 30000)
-            
-            console.log("realTokenBalance", await token_real.connect(user1).balanceOf(user1));
+            await currency_usdc.connect(owner).transfer(user1, 10000)
+            await currency_usdc.connect(owner).transfer(user, 10000)
+            console.log("realTokenBalance", await token_real.connect(user1).balanceOf(user1))
             console.log("realTokenBalence: ", await token_real.connect(user1).balanceOf(user))
+            console.log("currancy_Token: ", await currency_usdc.connect(user1).balanceOf(user1))
+            console.log("currancy_Token: ", await currency_usdc.connect(user1).balanceOf(user))
+
+
             await token_real.connect(user1).approve(marketplace, amount)
             await token_real.connect(user).approve(marketplace, amount)
-            await marketplace.connect(user1).buy(0, price, amount )
+            await currency_usdc.connect(user).approve(marketplace, amount * price)
+            await currency_usdc.connect(user1).approve(marketplace, amount * price)
+            await marketplace.connect(user1).buy(0, price, amount)
+
+            console.log("realTokenBalance", await token_real.connect(user1).balanceOf(user1))
+            console.log("realTokenBalence: ", await token_real.connect(user1).balanceOf(user))
+            console.log("currancy_Token: ", await currency_usdc.connect(user1).balanceOf(user1))
+            console.log("currancy_Token: ", await currency_usdc.connect(user1).balanceOf(user))
+
+            // const result = await marketplace.connect(user1).getOldBuyerBalance(0, price, amount)
+            // console.log("Result: ", result)
         })
 
         // it("Create Permit Offer", async function () {
@@ -142,7 +157,7 @@ describe("Test Contract", function () {
         //     const sigV = splitSign[0]
         //     const sigR = splitSign[1]
         //     const sigS = splitSign[2]
-            
+
         //     console.log("user_address: ", await user.getAddress())
         //     console.log("user1_address: ", await user1.getAddress())
         //     try{

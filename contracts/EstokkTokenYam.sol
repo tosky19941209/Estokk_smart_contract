@@ -442,7 +442,8 @@ contract EstokkYam is
         //     "amount too low"
         // );
 
-        uint256 buyerTokenAmount = (_amount * _price) / (uint256(10) ** offerTokenInterface.decimals());
+        uint256 buyerTokenAmount = _amount * _price;
+        // uint256 buyerTokenAmount = (_amount * _price) / (uint256(10) ** offerTokenInterface.decimals());
 
         uint256 oldBuyerBalance = buyerTokenInterface.balanceOf(msg.sender);
         uint256 oldSellerBalance = offerTokenInterface.balanceOf(seller);
@@ -455,10 +456,10 @@ contract EstokkYam is
             oldBuyerBalance > buyerTokenInterface.balanceOf(msg.sender),
             "buyer error"
         );
-        // require(
-        //     oldSellerBalance > offerTokenInterface.balanceOf(seller),
-        //     "seller error"
-        // );
+        require(
+            oldSellerBalance > offerTokenInterface.balanceOf(seller),
+            "seller error"
+        );
 
         emit OfferAccepted(
             _offerId,
@@ -470,36 +471,53 @@ contract EstokkYam is
             _amount
         );
     }
-    
-    function getOldBuyerBalance() public pure returns (uint256) {
-        if (buyers[_offerId] != address(0)) {
-            require(buyers[_offerId] == msg.sender, "Private offer");
-        }
 
-        address seller = sellers[_offerId];
-        address offerToken = offerTokens[_offerId];
-        address buyerToken = buyerTokens[_offerId];
 
-        IToken offerTokenInterface = IToken(offerToken);
-        IToken buyerTokenInterface = IToken(buyerToken);
 
-        require(prices[_offerId] == _price, "offer price wrong");
-        require(_amount <= amounts[_offerId], "amount too high");
-        // require(
-        //     _amount * _price > (uint256(10) ** offerTokenInterface.decimals()),
-        //     "amount too low"
-        // );
 
-        uint256 buyerTokenAmount = (_amount * _price) / (uint256(10) ** offerTokenInterface.decimals());
 
-        uint256 oldBuyerBalance = buyerTokenInterface.balanceOf(msg.sender);
-        uint256 oldSellerBalance = offerTokenInterface.balanceOf(seller);
 
-        amounts[_offerId] = amounts[_offerId] - _amount;
-        buyerTokenInterface.transferFrom(msg.sender, seller, buyerTokenAmount);
-        offerTokenInterface.transferFrom(seller, msg.sender, _amount);
 
-    }
+
+
+
+    // function getOldBuyerBalance(uint256 _offerId, uint256 _price, uint256 _amount) public view returns (uint256, uint256) {
+    //     if (buyers[_offerId] != address(0)) {
+    //         require(buyers[_offerId] == msg.sender, "Private offer");
+    //     }
+
+    //     address seller = sellers[_offerId];
+    //     address offerToken = offerTokens[_offerId];
+    //     address buyerToken = buyerTokens[_offerId];
+
+    //     IToken offerTokenInterface = IToken(offerToken);
+    //     IToken buyerTokenInterface = IToken(buyerToken);
+
+    //     require(prices[_offerId] == _price, "offer price wrong");
+    //     require(_amount <= amounts[_offerId], "amount too high");
+    //     // require(
+    //     //     _amount * _price > (uint256(10) ** offerTokenInterface.decimals()),
+    //     //     "amount too low"
+    //     // );
+
+    //     uint256 buyerTokenAmount = (_amount * _price) / (uint256(10) ** offerTokenInterface.decimals());
+
+    //     uint256 oldBuyerBalance = buyerTokenInterface.balanceOf(msg.sender);
+    //     uint256 oldSellerBalance = offerTokenInterface.balanceOf(seller);
+    //     amounts[_offerId] = amounts[_offerId] - _amount;
+    //     buyerTokenInterface.transferFrom(msg.sender, seller, buyerTokenAmount);
+    //     offerTokenInterface.transferFrom(seller, msg.sender, _amount);
+
+    //     return (oldBuyerBalance, oldSellerBalance);
+    // }
+
+
+
+
+
+
+
+
 
     function createOfferBatch(
         address[] calldata _offerTokens,
