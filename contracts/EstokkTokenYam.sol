@@ -442,7 +442,7 @@ contract EstokkYam is
             "amount too low"
         );
 
-        uint256 buyerTokenAmount = (_amount * _price) / (uint256(10) ** offerTokenInterface.decimals());
+        uint256 buyerTokenAmount = _amount * _price;
 
         uint256 oldBuyerBalance = buyerTokenInterface.balanceOf(msg.sender);
         uint256 oldSellerBalance = offerTokenInterface.balanceOf(seller);
