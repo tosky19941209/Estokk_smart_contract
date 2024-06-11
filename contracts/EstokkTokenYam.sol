@@ -442,7 +442,7 @@ contract EstokkYam is
             "amount too low"
         );
 
-        uint256 buyerTokenAmount = (_amount * _price) / (uint256(10) ** offerTokenInterface.decimals());
+        uint256 buyerTokenAmount = _amount * _price;
 
         uint256 oldBuyerBalance = buyerTokenInterface.balanceOf(msg.sender);
         uint256 oldSellerBalance = offerTokenInterface.balanceOf(seller);
@@ -455,20 +455,20 @@ contract EstokkYam is
             oldBuyerBalance > buyerTokenInterface.balanceOf(msg.sender),
             "buyer error"
         );
-        // require(
-        //     oldSellerBalance > offerTokenInterface.balanceOf(seller),
-        //     "seller error"
-        // );
+        require(
+            oldSellerBalance > offerTokenInterface.balanceOf(seller),
+            "seller error"
+        );
 
-        // emit OfferAccepted(
-        //     _offerId,
-        //     seller,
-        //     msg.sender,
-        //     offerToken,
-        //     buyerToken,
-        //     _price,
-        //     _amount
-        // );
+        emit OfferAccepted(
+            _offerId,
+            seller,
+            msg.sender,
+            offerToken,
+            buyerToken,
+            _price,
+            _amount
+        );
     }
 
     function createOfferBatch(
@@ -530,5 +530,4 @@ contract EstokkYam is
 
         return (v, r, s);
     }
-
 }
